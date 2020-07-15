@@ -46,7 +46,7 @@ rm(packages_load, list.of.packages, new.packages)
 #Load adn tidy data
 #####################################################
 # browseURL("https://datascienceplus.com/how-to-use-googlesheets-to-connect-r-to-google-sheets/")
-
+browseURL("https://docs.google.com/spreadsheets/d/1Sv8oodbmBMpNnFS5JyhijANo2tgQnYlxIqzLrpuCNGA/edit?usp=sharing")
 activities <- 
   read_sheet("https://docs.google.com/spreadsheets/d/1Sv8oodbmBMpNnFS5JyhijANo2tgQnYlxIqzLrpuCNGA/edit?usp=sharing")
 
@@ -128,3 +128,103 @@ ggplot(., aes(value, Activity, colour = Type)) +
   )
 
 shell.exec(here::here("out", "gant.png"))
+
+
+##################################################################################
+# Project phases for APS 2020 poster
+###################################################################################
+activities <- 
+  read_sheet("https://docs.google.com/spreadsheets/d/1Sv8oodbmBMpNnFS5JyhijANo2tgQnYlxIqzLrpuCNGA/edit?usp=sharing",
+             sheet = "Phases")
+
+## Set factor level to order the activities on the plot
+activities$Activity <- 
+  factor(activities$Activity,
+         levels = activities$Activity[nrow(activities):1])
+activities$Type <- 
+  factor(activities$Type,
+         levels = unique(activities$Type))
+
+activities$`Start Date` <- lubridate::as_date(activities$`Start Date` )
+activities$`End Date` <- lubridate::as_date(activities$`End Date` )
+
+textdta <- 
+  activities %>% 
+  dplyr::mutate( dif = difftime(`End Date`,`Start Date`, units = "days"),
+                 dte =`Start Date` + dif/2 ) 
+# %>% 
+#   mutate(Activity = gsub(" ",  "\n", Activity, fixed = TRUE ))
+
+df_melted <- 
+  reshape2::melt(dplyr::filter(activities, Type!= "Meeting"),
+                 measure.vars = c("Start Date", "End Date" ))
+
+
+
+
+df_melted %>% 
+  mutate(yr = year(value)) %>% 
+  ggplot(., aes(value, Activity, colour = Type)) +
+  geom_line(aes(color = Activity),size = 15.5) +
+  labs(x = '', y = '') +
+  egg::theme_article() +
+  # geom_point(
+  #   data = textdta,
+  #   aes(    y = 0.5,
+  #           x = dte),
+  #   shape = 2,
+  #   size = 2,
+  #   color = "black"
+  # )+
+  scale_fill_brewer( type = "qual")+
+  geom_text(data = textdta, 
+            aes(
+              label = stringr::str_wrap(Activity, 53),
+              y = Activity,
+              x = dte
+            ),
+            size = 4.1,
+            color = "black")+
+  # facet_wrap(~yr, ncol = 1)+
+  # scale_colour_manual(name = "",
+  #                     labels = c("Activity 1: Model\ndevelopment",
+  #                                "Activity 2: Model\nintegration"),
+  #                     values = c("#81E8C2", "#F6F6B2")) +
+  theme(
+    # legend.position = c(.84, .87), #place position of the legend inside plotting area
+    legend.position = "none", #place position of the legend inside plotting area
+    plot.title = element_text(hjust = 0.5),
+    panel.grid.major.x = element_line(colour = "gray", linetype = "dotted"),
+    panel.grid.minor.x = element_line(colour = "gray", linetype = "solid"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y=element_blank(),
+    axis.text.x = element_text(angle = 0),
+    text = element_text(size = 13,
+                        family = "TT Times New Roman")
+  ) +
+  scale_x_date(
+    date_labels = "%b-'%y",
+    # limits = c(activities$`Start Date`[1], activities$`End Date`[nrow(activities)]),
+    date_breaks = '3 month',
+    date_minor_breaks = "1 year"
+  ) +
+  ggsave(
+    here::here("out", "gant_phases.png"),
+    width = 14.8,
+    height = .65*length(unique(df_melted$Activity)),
+    dpi = 400
+  )
+
+shell.exec(here::here("out", "gant_phases.png"))
+
+
+
+
+
+
+
+
+
+
