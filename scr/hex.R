@@ -8,8 +8,6 @@ library(ggplot2)
 
 library(hexSticker)
 
-p <- ggplot(aes(x = mpg, y = wt), data = mtcars) + geom_point()
-pl <- p + theme_void() + theme_transparent()
 
 library(showtext)
 ## Loading Google fonts (http://www.google.com/fonts)
@@ -18,6 +16,28 @@ font_add_google("Gochi Hand", "gochi")
 font_add_google("Alegreya Sans", "aleg")
 ## Automatically use showtext to render text for future devices
 showtext_auto()
+## Not run: 
+font_add_google("Alegreya Sans", "aleg")
+
+
+
+if(require(showtext))
+
+  {
+  wd = setwd(tempdir())
+  pdf("google-fonts-ex.pdf")
+  showtext_begin()
+  
+  par(family = "aleg")
+  plot(0:5,0:5, type="n")
+  text(1:4, 1:4, "Alegreya Sans", font=1:4, cex = 2)
+  
+  showtext_end()
+  dev.off()
+  setwd(wd)
+}
+p <- ggplot(aes(x = mpg, y = wt), data = mtcars) + geom_point()
+pl <- p + theme_void() + theme_transparent()
 
   
 (s <-

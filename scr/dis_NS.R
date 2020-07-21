@@ -102,13 +102,7 @@ df_melted %>%
            size = 0.5)+
   facet_wrap(~Year, nrow = 4)
 
-df_melted %>% 
-  ggplot(aes(Region, Rating, color = Disease)) +
-  geom_point()+
-  # facet_wrap(~Year, nrow = 1)+
-  theme(
-    # legend.position = c(.84, .87), #place position of the legend inside plotting area
-    legend.position = "top")
+
 
 
 
@@ -120,8 +114,9 @@ df_melted %>%
   theme(# legend.position = c(.84, .87), #place position of the legend inside plotting area
     legend.position = "top") +
   labs(y = "Disease Rating",
-       colour  = "Disease",
-       subtitle = "Variability of disease ratings over time and production zones (Adapted from  Mueller et al. 2016). ") +
+       colour  = "Disease:"
+       # subtitle = "Variability of corn disease ratings over time and production zones (Adapted from  Mueller et al. 2016). "
+       ) +
   egg::theme_article() +
   theme(
     # legend.position = c(.84, .87), #place position of the legend inside plotting area
@@ -135,7 +130,7 @@ df_melted %>%
   ) +
   ggsave(
     here::here("out", "Diseases_North_South.png"),
-    width = 6.8,
+    width = 6.3,
     height = 3.3,
     dpi = 300
   )
