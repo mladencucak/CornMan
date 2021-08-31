@@ -16,7 +16,10 @@ list.of.packages <-
     "conflicted",
     "maps",
     "sf",
-    "ggspatial"
+    "ggspatial",
+    "rnaturalearth",
+    "rnaturalearthdata",
+    "rgeos"
   )
 
 new.packages <-
@@ -99,12 +102,12 @@ ggplot(data = world) +
     
    # geom_text(data = states, aes(X, Y, label = ID), size = 2) +
   scale_fill_viridis_c(trans = "sqrt", alpha = .4) +
-  coord_sf(xlim =  c(-104, -70), ylim = c(30.5, 46), expand = FALSE)+
+  # coord_sf(xlim =  c(-104, -70), ylim = c(30.5, 46), expand = FALSE)+
   theme_bw()+
-    geom_text(data = states, aes(X, Y, label = ID),
-             size = 3,
-             # fontface = "bold",
-             nudge_y = states$nudge_y) +
+    # geom_text(data = states, aes(X, Y, label = ID),
+    #          size = 3,
+    #          # fontface = "bold",
+    #          nudge_y = states$nudge_y) +
   annotation_scale(location = "br", width_hint = 0.4) +
   annotation_north_arrow(location = "br", which_north = "true", 
                          pad_x = unit(0.5, "in"), pad_y = unit(0.5, "in"),
